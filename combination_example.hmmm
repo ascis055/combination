@@ -59,29 +59,29 @@
 ##############################################################################
 # factorial function
 #
-21  pushr r14, r15	# save return address
-22  copy r2, r1		# copy argument to r2
-23  addn r1, -1		# subtract 1 from r1
-24  jgtzn r1, 27	# if the result is less or equal than 0,
+21  copy r2, r1		# copy argument to r2
+22  addn r1, -1		# subtract 1 from r1
+23  jgtzn r1, 26	# if the result is less or equal than 0,
 			# return 1, otherwise jump to recursive call
 #
 # return 1
 #
-25  setn r13, 1		# set return value 1
-26  jumpn 31		# return from function
+24  setn r13, 1		# set return value 1
+25  jumpr r14		# return from function
 
 #
 # call factorial recursively, multiply result by argument
 #
-27  pushr r2, r15	# save register used by function
+26  pushr r2, r15	# save register used by function
+27  pushr r14, r15	# save return address
 28  calln r14, 21	# call factorial, argument - 1 is already in r1
-29  popr r2, r15	# restore register used by function
-30  mul r13, r13, r2	# multiply result by the original argument
+29  popr r14, r15	# restore return address
+30  popr r2, r15	# restore register used by function
+31  mul r13, r13, r2	# multiply result by the original argument
 
 #
 # return from function
 #
-31  popr r14,r15	# restore return address
 32  jumpr r14		# return from function
 
 ##############################################################################
