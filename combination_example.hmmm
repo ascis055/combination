@@ -5,8 +5,8 @@
 
 ##############################################################################
 # r0 <- 0
-# r1 <- function argument, preserved by factorial function
-# r2 <- temporary register, preserved by factorial function
+# r1 <- function argument, not preserved by factorial function
+# r2 <- temporary register, not preserved by factorial function
 # r3 <- n
 # r4 <- k
 # r5 <- temporary data, used in main function
@@ -27,7 +27,7 @@
 ##############################################################################
 # main
 #
-0   setn r15, 35	# set stack (stack grows up, stores 1-byte entries)
+0   setn r15, 33	# set stack (stack grows up, stores 1-byte entries)
 1   read r3		# read n
 2   read r4		# read k
 3   jgtzn r3, 7		# don't return error if n > 0
@@ -60,31 +60,29 @@
 # factorial function
 #
 21  pushr r14, r15	# save return address
-22  pushr r1, r15	# save r1 with argument
-23  pushr r2, r15	# save register used by function
-24  copy r2, r1		# copy argument to r2
-25  addn r1, -1		# subtract 1 from r1
-26  jgtzn r1, 29	# if the result is less or equal than 0,
+22  copy r2, r1		# copy argument to r2
+23  addn r1, -1		# subtract 1 from r1
+24  jgtzn r1, 27	# if the result is less or equal than 0,
 			# return 1, otherwise jump to recursive call
 #
 # return 1
 #
-27  setn r13, 1		# set return value 1
-28  jumpn 31		# return from function
+25  setn r13, 1		# set return value 1
+26  jumpn 31		# return from function
 
 #
 # call factorial recursively, multiply result by argument
 #
-29  calln r14, 21	# call factorial, argument - 1 is already in r1
+27  pushr r2, r15	# save register used by function
+28  calln r14, 21	# call factorial, argument - 1 is already in r1
+29  popr r2, r15	# restore register used by function
 30  mul r13, r13, r2	# multiply result by the original argument
 
 #
 # return from function
 #
-31  popr r2, r15	# restore register used by function
-32  popr r1, r15	# restore r1 with argument
-33  popr r14,r15	# restore return address
-34  jumpr r14		# return from function
+31  popr r14,r15	# restore return address
+32  jumpr r14		# return from function
 
 ##############################################################################
 # stack starts here
